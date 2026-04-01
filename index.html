@@ -3,82 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ACM Winter Kickoff 2026</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Event Check-In</title>
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
     <style>
+        /* Mobile-first CSS */
+        :root {
+            --primary-color: #242530;
+            --bg-color: #242530;
+            --text-color: #ffffff;
+            --grayed-out: #303030;
+        }
+
         body {
             font-family: "DM Sans", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
             display: flex;
+            flex-direction: column;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .screen {
+            display: none;
+            flex: 1;
+            padding: 2rem 1.5rem;
+            animation: fadeIn 0.3s ease-in-out;
+            overflow-y: auto;
+            padding-bottom: 80px; /* Space for nav */
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #151515;
-            flex-direction: column;
         }
 
-        h1 {
+        h1 { font-size: 1.8rem; margin-bottom: 1rem; }
+        p { font-size: 1.1rem; line-height: 1.5; margin-bottom: 1.5rem; }
+
+        .btn {
+            background-color: purple;
             color: white;
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 0.5em;
-        }
-
-        p {
-            margin-top: 0;
-            font-size: 1.15em;
-            color: white;
-            text-align: center;
-        }
-
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 75%;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
+            border: 2px solid white;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+            transition: opacity 0.2s;
         }
 
-        .button-food {
-            background-color: #b11313;
+        .btn:active { opacity: 0.8; }
+        
+        .btn-secondary {
+            background-color: dark-gray;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Bottom Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #242530;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 4rem;
             color: white;
+            cursor: pointer;
+            padding: 0 1rem;
         }
 
-        .button-merch {
-            background-color: #447bbe;
-            color: white;
+        .nav-btn:disabled {
+            color: var(--grayed-out);
+            cursor: not-allowed;
         }
 
-        img {
-            border: 0.25em solid white;
-            border-radius: 1em;
-            height: auto;
-            width: 75%;
+        /* Specific screen styles */
+        .info-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        .code-display {
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: var(--primary-color);
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body> 
+<body>
 
-        <h1>Welcome!</h1>
-    <div class="button-container">
-        <a id="as" href="https://docs.google.com/forms/d/e/1FAIpQLSdTyROOr_WZGOgpNyfJL2QQFxIDj9FJxSxk2T0orOKu4VvQlQ/viewform?entry.219446721=Association+for+Computing+Machinery+%28ACM%29+-+Spring+Kickoff&entry.570464428=Cali+Banh+Mi%2C+Tapioca+Express&entry.1851239463=Attendee+%2F+Prospective+Member" target="_blank" class="button button-food">Step 1: AS Funding Form</a>
-            <p>For funding purposes<br><strong><u>Show confirmation to enter</u></strong></p>
-            <a href="https://members.acmucsd.com/?code=spring-kickoff" target="_blank" class="button button-merch">Step 2: ACM Portal</a>
-            <p>Create ACM account and earn points towards free merch<br><strong><u>Finish before leaving</u></strong></p>
+    <div id="screen-0" class="screen active">
+        <h1>Welcome to Kickoff!</h1>
+        <p>Let's get you checked in.</p>
+            <p>Tap the right arrow at the bottom of your screen to get started.</p>
     </div>
 
+    <div id="screen-1" class="screen">
+        <h1>Step 1: Check-in Form</h1>
+        <div class="info-box">
+            <p>Please fill out the attendance form using your <strong>UCSD Google account</strong>.</p>
+                <p style="color: #d9534f; font-weight: bold;">⚠️ Don't close the tab after you finish the form! You'll need to show confirmation to get in.</p>
+            
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTyROOr_WZGOgpNyfJL2QQFxIDj9FJxSxk2T0orOKu4VvQlQ/viewform?entry.219446721=Association+for+Computing+Machinery+%28ACM%29+-+Spring+Kickoff&entry.570464428=Cali+Banh+Mi%2C+Tapioca+Express&entry.1851239463=Attendee+%2F+Prospective+Member" target="_blank" id="openFormBtn" class="btn">Open Google Form</a>
+            
+            <p id="formNotFilled">Come back to this page when you're done.</p>
+            <p id="formContinueMsg" class="hidden" style="color: #28a745; margin-top: 15px; font-weight: bold;">
+                Thanks! Proceed to the next step.
+            </p>
+        </div>
+    </div>
+
+    <div id="screen-2" class="screen">
+        <h1>Step 2: Web Portal</h1>
+        <p><em>Note: This step can be completed after you enter the venue and find a seat.</em></p>
+        
+        <div class="info-box">
+            <p>Do you have an ACM membership account?</p>
+            <button class="btn" onclick="handleAccountResponse(true)">Yes</button>
+            <button class="btn btn-secondary" onclick="handleAccountResponse(false)">No</button>
+
+            <div id="yesAccount" class="hidden" style="margin-top: 20px;">
+                <p>Welcome back! Please log in to check in automatically.</p>
+                    <a href="https://members.acmucsd.com/?code=spring-kickoff" class="btn" target="_blank">Login & Auto Check-In</a>
+            </div>
+
+            <div id="noAccount" class="hidden" style="margin-top: 20px;">
+                <p>Let's get you set up. Create an account:</p>
+                <a href="https://members.acmucsd.com/register" target="_blank" class="btn">Create Account</a>
+                <p>Then enter the code below:</p>
+                <div class="code-display">spring-kickoff</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-3" class="screen">
+        <h1>All done!</h1>
+        <div class="info-box">
+            <p><strong>Reminder: </strong>Have your Google Form confirmation screen ready to show at the front desk.</p>
+                <p>Let's keep in touch! We'll post the slides here:</p>
+                <a href="https://acmurl.com/discord" target="_blank" class="btn">Join our Discord</a>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <button id="prevBtn" class="nav-btn" disabled><</button>
+            <button id="nextBtn" class="nav-btn">></button>
+    </div>
+
+    <script>
+        // State management
+        let currentScreen = 0;
+        const totalScreens = 4;
+        
+        // Progress tracking for locked screens
+        let isFormOpened = false;
+        let isPortalInteracted = false;
+
+        // DOM Elements
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const openFormBtn = document.getElementById('openFormBtn');
+        const formNotFilledBtn = document.getElementById('formNotFilled');
+        const formContinueMsg = document.getElementById('formContinueMsg');
+        const yesAccount = document.getElementById('yesAccount');
+        const noAccount = document.getElementById('noAccount');
+
+        // Navigation Logic
+        function updateScreen() {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach((screen, index) => {
+                screen.classList.toggle('active', index === currentScreen);
+            });
+
+            // Update Previous Button
+            prevBtn.disabled = currentScreen === 0;
+
+            // Update Next Button based on screen requirements
+            if (currentScreen === totalScreens - 1) {
+                // Last screen, disable next button
+                nextBtn.disabled = true;
+            } else if (currentScreen === 1 && !isFormOpened) {
+                // Screen 2: Locked until form is opened
+                nextBtn.disabled = true;
+            } else if (currentScreen === 2 && !isPortalInteracted) {
+                // Screen 3: Locked until portal interaction
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
+            }
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentScreen > 0) {
+                currentScreen--;
+                updateScreen();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentScreen < totalScreens - 1) {
+                currentScreen++;
+                updateScreen();
+            }
+        });
+
+        // Screen 2 Logic: Google Form Unlock
+        openFormBtn.addEventListener('click', () => {
+            isFormOpened = true;
+            formContinueMsg.classList.remove('hidden');
+            if (currentScreen === 1) {
+                nextBtn.disabled = false; // Un-gray the next button
+                formNotFilledBtn.classList.add('hidden');
+            }
+        });
+
+        // Screen 3 Logic: Portal Interaction Unlock
+        function handleAccountResponse(hasAccount) {
+            isPortalInteracted = true;
+            
+            if (hasAccount) {
+                yesAccount.classList.remove('hidden');
+                noAccount.classList.add('hidden');
+            } else {
+                noAccount.classList.remove('hidden');
+                yesAccount.classList.add('hidden');
+            }
+
+            if (currentScreen === 2) {
+                nextBtn.disabled = false; // Show/enable the next button
+            }
+        }
+
+        // Initialize the first screen on load
+        updateScreen();
+    </script>
 </body>
 </html>
