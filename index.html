@@ -1,17 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Kickoff Check-In</title>
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <script>
+        const baseUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSdTyROOr_WZGOgpNyfJL2QQFxIDj9FJxSxk2T0orOKu4VvQlQ/viewform';
+        const eventTitle = 'Spring Kickoff';
+        const food = 'Cali Banh Mi, Tapioca Express';
+        const checkInCode = 'spring-kickoff';
+    </script>
+    <link rel="icon" href="./logo.svg" type="image/svg+xml">
     <style>
         /* Mobile-first CSS */
         :root {
-            --primary-color: #242530;
-            --bg-color: #242530;
+            --primary-color: #040405;
+            --bg-color: #0e0e0f;
             --text-color: #ffffff;
-            --grayed-out: #202020;
+            --grayed-out: #3b3b3b;
+        }
+
+        /* latin */
+        @font-face {
+            font-family: 'DM Sans';
+            font-style: normal;
+            font-weight: 100 1000;
+            font-display: swap;
+            src: url(./dm-sans.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
         }
 
         body {
@@ -26,13 +43,18 @@
             text-align: center;
         }
 
+        img {
+            width: 12rem;
+        }
+
         .screen {
             display: none;
             flex: 1;
             padding: 2rem 1.5rem;
             animation: fadeIn 0.3s ease-in-out;
             overflow-y: auto;
-            padding-bottom: 80px; /* Space for nav */
+            padding-bottom: 80px;
+            /* Space for nav */
         }
 
         .screen.active {
@@ -42,13 +64,27 @@
             align-items: center;
         }
 
-        h1 { font-size: 1.8rem; margin-bottom: 1rem; }
-        p { font-size: 1.1rem; line-height: 1.5; margin-bottom: 1.5rem; }
+        h1.prominent {
+            color: #FF8E78;
+            text-shadow: 0 0 1rem rgba(255, 142, 120, 0.5);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
 
         .btn {
-            background-color: purple;
+            background-color: #c05600;
             color: white;
-            border: 2px solid white;
+            border: none;
+            box-shadow: 0 4px 1rem #662900;
             padding: 12px 24px;
             font-size: 1.1rem;
             border-radius: 8px;
@@ -59,13 +95,21 @@
             transition: opacity 0.2s;
         }
 
-        .btn:active { opacity: 0.8; }
-        
+        .warning {
+            color: #d9534f;
+        }
+
+        .btn:active {
+            opacity: 0.8;
+        }
+
         .btn-secondary {
             background-color: dark-gray;
         }
 
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
 
         /* Bottom Navigation */
         .nav-bar {
@@ -73,12 +117,76 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: #242530;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            background: #18181d;
+            border-top: 2px solid #ff8e78;
+            box-shadow: 0 0 3rem rgba(255, 142, 120, 0.5);
             display: flex;
             justify-content: space-between;
             padding: 1rem;
             box-sizing: border-box;
+        }
+
+        .nav-status {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            min-width: 170px;
+            width: min(48vw, 280px);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            color: #ffffff;
+            background: #5c4a1d;
+            border: 2px solid #f0c74a;
+            border-radius: 14px;
+            padding: 0.5rem 0.75rem;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
+        }
+
+        /* red*/
+        .nav-status.pending {
+            background: #442727;
+            border-color: #a8260f;
+        }
+
+        .nav-status.near-done {
+            background: #5c4a1d;
+            border-color: #f0c74a;
+        }
+
+        .nav-status.done {
+            background: #1b5a27;
+            border-color: #57df72;
+        }
+
+        .task-status-text {
+            line-height: 1;
+        }
+
+        .task-progress-track {
+            width: 100%;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.25);
+            overflow: hidden;
+        }
+
+        .task-progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: inherit;
+            background: #f0c74a;
+            transition: width 0.25s ease, background-color 0.25s ease;
+        }
+
+        .nav-status.near-done .task-progress-fill {
+            background: #43d19d;
+        }
+
+        .nav-status.done .task-progress-fill {
+            background: #57df72;
         }
 
         .nav-btn {
@@ -100,7 +208,7 @@
             padding: 1.5rem;
             border-radius: 12px;
             border: 2px solid white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             width: 100%;
             max-width: 400px;
             box-sizing: border-box;
@@ -108,7 +216,6 @@
 
         .code-display {
             font-size: 2rem;
-            font-weight: bold;
             letter-spacing: 2px;
             color: var(--primary-color);
             background: #e9ecef;
@@ -117,89 +224,165 @@
             margin: 10px 0;
         }
 
+        .form-frame-wrap {
+            width: 100%;
+            max-width: 900px;
+            height: min(50vh, 720px);
+            border: 2px solid white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-sizing: border-box;
+            background: #fff;
+        }
+
+        #formContinueMsg {
+            color: #28a745;
+            margin-top: 15px;
+        }
+
+        #yesAccount,
+        #noAccount {
+            margin-top: 20px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div id="screen-0" class="screen active">
-        <h1>Welcome to Kickoff!</h1>
-        <p>Let's get you checked in.</p>
-            <p>Tap the right arrow at the bottom of your screen to get started.</p>
+        <img src="./logo.svg" alt="ACM logo">
+        <h1 class="prominent">Welcome to Kickoff!</h1>
+        <p>Tap the &gt; at the bottom of your screen<br>to start checking in.</p>
     </div>
 
     <div id="screen-1" class="screen">
-        <h1>Step 1: Check-in Form</h1>
-        <div class="info-box">
-            <p>Please fill out the attendance form using your <strong>UCSD Google account</strong>.</p>
-                <p style="color: #d9534f; font-weight: bold;">⚠️ Don't close the tab after you finish the form! You'll need to show confirmation to get in.</p>
-            
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTyROOr_WZGOgpNyfJL2QQFxIDj9FJxSxk2T0orOKu4VvQlQ/viewform?entry.219446721=Association+for+Computing+Machinery+%28ACM%29+-+Spring+Kickoff&entry.570464428=Cali+Banh+Mi%2C+Tapioca+Express&entry.1851239463=Attendee+%2F+Prospective+Member" target="_blank" id="openFormBtn" class="btn">Open Google Form</a>
-            
-            <p id="formNotFilled">Then return to this page.</p>
-            <p id="formContinueMsg" class="hidden" style="color: #28a745; margin-top: 15px; font-weight: bold;">
-                Thanks! Proceed to the next step.
-            </p>
+        <h1>Task 1: AS Form</h1>
+        <div class="info-box" id="beforeForm">
+            <p>Please fill out the form using your <strong>UCSD Google account</strong>.</p>
+            <p class="warning">⚠️ Don't close the tab after you finish the form! You'll need to show confirmation to get
+                in.</p>
+            <p>Tap <strong>&gt;</strong> for a link to the form.</p>
         </div>
     </div>
 
     <div id="screen-2" class="screen">
-        <h1>Step 2: Web Portal</h1>
+        <h1>Task 1: AS Form</h1>
+        <a id="google-form" href="https://acmurl.com/as" target="_blank" class="btn" onclick="handleFormOpened()">Open
+            form in new tab</a>
+        <p class="warning" id="formNotFilled">Return to this screen when you're done.</p>
+        <p id="formContinueMsg" class="hidden">
+            Thanks! Proceed to the next task.
+        </p>
+    </div>
+
+    <div id="screen-3" class="screen">
+        <h1>Task 2: ACM Portal</h1>
         <p><em>Note: You can finish this after entering.</em></p>
-        
+
         <div class="info-box">
             <p>Do you have an ACM account?</p>
             <button class="btn" onclick="handleAccountResponse(true)">Yes</button>
             <button class="btn btn-secondary" onclick="handleAccountResponse(false)">No</button>
 
-            <div id="yesAccount" class="hidden" style="margin-top: 20px;">
+            <div id="yesAccount" class="hidden">
                 <p>Welcome back!</p>
-                    <a href="https://members.acmucsd.com/?code=spring-kickoff" class="btn" target="_blank">Login & Auto Check-In</a>
+                <a id="checkin-account" href="https://members.acmucsd.com/?code=kickoff" class="btn" target="_blank"
+                    onclick="handleAccountDone()">Login & Auto
+                    Check-In</a>
             </div>
 
-            <div id="noAccount" class="hidden" style="margin-top: 20px;">
+            <div id="noAccount" class="hidden">
                 <p>OK, let's make one:</p>
-                <a href="https://members.acmucsd.com/register" target="_blank" class="btn">Create Account</a>
+                <a href="https://members.acmucsd.com/register" target="_blank" class="btn"
+                    onclick="handleAccountDone()">Create Account</a>
                 <p>Then enter this code:</p>
-                <div class="code-display">spring-kickoff</div>
+                <div class="code-display">kickoff</div>
             </div>
         </div>
     </div>
 
-    <div id="screen-3" class="screen">
-        <h1>All done!</h1>
+    <div id="screen-4" class="screen">
+        <h1 class="prominent">All done!</h1>
         <div class="info-box">
             <p><strong>Reminder: </strong>Have your Google Form confirmation screen ready to show at the front desk.</p>
-                <p>Let's keep in touch! We'll post the slides here:</p>
-                <a href="https://acmurl.com/discord" target="_blank" class="btn">Join our Discord</a>
+            <p>Let's keep in touch! We'll post the slides here:</p>
+            <a href="https://acmurl.com/discord" target="_blank" class="btn">Join our Discord</a>
         </div>
     </div>
 
     <div class="nav-bar">
-        <button id="prevBtn" class="nav-btn" disabled><</button>
-            <button id="nextBtn" class="nav-btn">></button>
+        <button id="prevBtn" class="nav-btn" disabled>&lt;</button>
+        <div id="taskStatus" class="nav-status pending" role="status" aria-live="polite">
+            <div id="taskStatusText" class="task-status-text">2 tasks left</div>
+            <div class="task-progress-track">
+                <div id="taskProgressFill" class="task-progress-fill"></div>
+            </div>
+        </div>
+        <button id="nextBtn" class="nav-btn">&gt;</button>
     </div>
-
     <script>
+        const params = new URLSearchParams();
+        params.append('entry.219446721', eventTitle);
+        params.append('entry.570464428', food);
+        params.append('entry.1851239463', 'Attendee / Prospective Member');
+        document.getElementById('google-form').href = `${baseUrl}?${params.toString()}`;
+
+        document.getElementById('checkin-account').href = `https://members.acmucsd.com/?code=${checkInCode}`;
+        document.getElementsByClassName('code-display')[0].textContent = checkInCode;
+
         // State management
         let currentScreen = 0;
-        const totalScreens = 4;
-        
+        const totalScreens = 5;
+
         // Progress tracking for locked screens
         let isFormOpened = false;
         let isPortalInteracted = false;
 
+
         // DOM Elements
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
-        const openFormBtn = document.getElementById('openFormBtn');
-        const formNotFilledBtn = document.getElementById('formNotFilled');
-        const formContinueMsg = document.getElementById('formContinueMsg');
+        const taskStatus = document.getElementById('taskStatus');
+        const taskStatusText = document.getElementById('taskStatusText');
+        const taskProgressFill = document.getElementById('taskProgressFill');
         const yesAccount = document.getElementById('yesAccount');
         const noAccount = document.getElementById('noAccount');
+
+        function updateTaskStatus() {
+            const totalTasks = 2;
+            // Tasks are considered complete once the user moves past the form screen
+            // and interacts with the ACM account question.
+            const formTaskLeft = isFormOpened ? 0 : 1;
+            const portalTaskLeft = isPortalInteracted ? 0 : 1;
+            const tasksLeft = formTaskLeft + portalTaskLeft;
+            const tasksDone = totalTasks - tasksLeft;
+            const progressPercent = Math.round((tasksDone / totalTasks) * 100);
+
+            taskStatusText.textContent = tasksLeft ? `${tasksLeft} ${tasksLeft === 1 ? 'task' : 'tasks'} left` : 'Done!'
+            taskProgressFill.style.width = `${progressPercent}%`;
+
+            taskStatus.classList.remove('pending', 'near-done', 'done');
+            if (tasksLeft === 0) {
+                taskStatus.classList.add('done');
+            } else if (tasksLeft === 1) {
+                taskStatus.classList.add('near-done');
+            } else {
+                taskStatus.classList.add('pending');
+            }
+        }
 
         // Navigation Logic
         function updateScreen() {
@@ -215,15 +398,19 @@
             if (currentScreen === totalScreens - 1) {
                 // Last screen, disable next button
                 nextBtn.disabled = true;
-            } else if (currentScreen === 1 && !isFormOpened) {
-                // Screen 2: Locked until form is opened
+            } else if (currentScreen === 2 && !isFormOpened) {
+                // Form screen: user must click the link to enable next
                 nextBtn.disabled = true;
-            } else if (currentScreen === 2 && !isPortalInteracted) {
-                // Screen 3: Locked until portal interaction
+                document.getElementById('formNotFilled').classList.remove('hidden');
+                document.getElementById('formContinueMsg').classList.add('hidden');
+            } else if (currentScreen === 3 && !isPortalInteracted) {
+                // Web portal screen: locked until portal interaction
                 nextBtn.disabled = true;
             } else {
                 nextBtn.disabled = false;
             }
+
+            updateTaskStatus();
         }
 
         prevBtn.addEventListener('click', () => {
@@ -240,20 +427,22 @@
             }
         });
 
-        // Screen 2 Logic: Google Form Unlock
-        openFormBtn.addEventListener('click', () => {
-            isFormOpened = true;
-            formContinueMsg.classList.remove('hidden');
-            if (currentScreen === 1) {
-                nextBtn.disabled = false; // Un-gray the next button
-                formNotFilledBtn.classList.add('hidden');
-            }
-        });
+        function handleFormOpened() {
+            setTimeout(() => {
+                isFormOpened = true;
+                if (currentScreen === 2) {
+                    nextBtn.disabled = false; // Show/enable the next button
+                    document.getElementById('formNotFilled').classList.add('hidden');
+                    document.getElementById('formContinueMsg').classList.remove('hidden');
+                }
+                updateTaskStatus();
+            }, 100); // Slight delay to ensure the click registers before enabling next
+        }
 
-        // Screen 3 Logic: Portal Interaction Unlock
+        // Screen 4 Logic: Portal Interaction Unlock
         function handleAccountResponse(hasAccount) {
             isPortalInteracted = true;
-            
+
             if (hasAccount) {
                 yesAccount.classList.remove('hidden');
                 noAccount.classList.add('hidden');
@@ -261,14 +450,19 @@
                 noAccount.classList.remove('hidden');
                 yesAccount.classList.add('hidden');
             }
+        }
 
-            if (currentScreen === 2) {
+        function handleAccountDone() {
+            isPortalInteracted = true;
+            if (currentScreen === 3) {
                 nextBtn.disabled = false; // Show/enable the next button
             }
+            updateTaskStatus();
         }
 
         // Initialize the first screen on load
         updateScreen();
     </script>
 </body>
+
 </html>
