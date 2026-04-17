@@ -64,7 +64,7 @@
             align-items: center;
         }
 
-        h1.prominent {
+        .prominent {
             color: #FF8E78;
             text-shadow: 0 0 1rem rgba(255, 142, 120, 0.5);
         }
@@ -271,7 +271,7 @@
     <div id="screen-1" class="screen">
         <h1>Task 1: AS Form</h1>
         <div class="info-box" id="beforeForm">
-            <p>Please fill out the form using your <strong>UCSD Google account</strong>.</p>
+            <p>Please fill out the AS funding form using your <strong>UCSD Google account</strong>.</p>
             <p class="warning">⚠️ Don't close the tab after you finish the form! You'll need to show confirmation to get
                 in.</p>
             <p>Tap <strong>&gt;</strong> for a link to the form.</p>
@@ -280,18 +280,30 @@
 
     <div id="screen-2" class="screen">
         <h1>Task 1: AS Form</h1>
-        <a id="google-form" href="https://acmurl.com/as" target="_blank" class="btn" onclick="handleFormOpened()">Open
-            form in new tab</a>
-        <p class="warning" id="formNotFilled">Return to this screen when you're done.</p>
-        <p id="formContinueMsg" class="hidden">
-            Thanks! Proceed to the next task.
-        </p>
+        <div class="info-box">
+            <a id="google-form" href="https://acmurl.com/as" target="_blank" class="btn"
+                onclick="handleFormOpened()">Open
+                form in new tab</a>
+            <p class="warning" id="formNotFilled">Return to this screen when you're done.</p>
+            <p id="formContinueMsg" class="hidden">
+                Thanks! Proceed to the next task.
+            </p>
+        </div>
     </div>
 
     <div id="screen-3" class="screen">
         <h1>Task 2: ACM Portal</h1>
-        <p><em>Note: You can finish this after entering.</em></p>
+        <div class="info-box">
+            <p><em>This task might take a little longer. You can finish it after you find a seat.</em></p>
+            <p>By checking in through the ACM Portal, you'll receive points that you can spend on <span
+                    class="prominent">free merch
+                    like hoodies and shirts.</span></p>
+            <p>Sounds nice? Tap &gt; to get that set up.</p>
+        </div>
+    </div>
 
+    <div id="screen-4" class="screen">
+        <h1>Task 2: ACM Portal</h1>
         <div class="info-box">
             <p>Do you have an ACM account?</p>
             <button class="btn" onclick="handleAccountResponse(true)">Yes</button>
@@ -314,11 +326,11 @@
         </div>
     </div>
 
-    <div id="screen-4" class="screen">
+    <div id="screen-5" class="screen">
         <h1 class="prominent">All done!</h1>
         <div class="info-box">
-            <p><strong>Reminder: </strong>Have your Google Form confirmation screen ready to show at the front desk.</p>
-            <p>Let's keep in touch! We'll post the slides here:</p>
+            <p>Thank you for checking in! Grab some food and enjoy the event!</p>
+            <p>Oh, and we should keep in touch:</p>
             <a href="https://acmurl.com/discord" target="_blank" class="btn">Join our Discord</a>
         </div>
     </div>
@@ -345,7 +357,7 @@
 
         // State management
         let currentScreen = 0;
-        const totalScreens = 5;
+        const totalScreens = 6;
 
         // Progress tracking for locked screens
         let isFormOpened = false;
@@ -403,7 +415,7 @@
                 nextBtn.disabled = true;
                 document.getElementById('formNotFilled').classList.remove('hidden');
                 document.getElementById('formContinueMsg').classList.add('hidden');
-            } else if (currentScreen === 3 && !isPortalInteracted) {
+            } else if (currentScreen === 4 && !isPortalInteracted) {
                 // Web portal screen: locked until portal interaction
                 nextBtn.disabled = true;
             } else {
@@ -454,7 +466,7 @@
 
         function handleAccountDone() {
             isPortalInteracted = true;
-            if (currentScreen === 3) {
+            if (currentScreen === 4) {
                 nextBtn.disabled = false; // Show/enable the next button
             }
             updateTaskStatus();
