@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Kickoff Check-In</title>
     <script>
-        const baseUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSdTyROOr_WZGOgpNyfJL2QQFxIDj9FJxSxk2T0orOKu4VvQlQ/viewform';
-        const eventTitle = 'Spring Kickoff';
+        const baseUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSc3CypbxjZgU7ZzbhlpEy1XtytmzDquuU4ELmf_VtDRjkDomw/viewform';
+        const eventTitle = 'Fall Kickoff';
         const food = 'Cali Banh Mi, Tapioca Express';
-        const checkInCode = 'spring-kickoff';
+        const checkInCode = 'fall-kickoff';
     </script>
     <link rel="icon" href="./logo.svg" type="image/svg+xml">
     <style>
@@ -240,10 +240,28 @@
             margin-top: 15px;
         }
 
-        #yesAccount,
-        #noAccount {
+        #checkInError {
             margin-top: 20px;
             animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 1rem;
+            font-family: inherit;
+            border-radius: 8px;
+            border: 2px solid #444;
+            background: #1e1e22;
+            color: white;
+            box-sizing: border-box;
+            margin-bottom: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .email-input:focus {
+            border-color: #FF8E78;
         }
 
         @keyframes fadeIn {
@@ -305,24 +323,19 @@
     <div id="screen-4" class="screen">
         <h1>Task 2: ACM Portal</h1>
         <div class="info-box">
-            <p>Do you have an ACM account?</p>
-            <button class="btn" onclick="handleAccountResponse(true)">Yes</button>
-            <button class="btn btn-secondary" onclick="handleAccountResponse(false)">No</button>
+            <p>Enter your email to check in and earn points for free merch!</p>
+            <input type="email" id="emailInput" class="email-input" placeholder="your@email.com">
+            <button class="btn" onclick="handleEmailCheckIn()">Check In</button>
 
-            <div id="yesAccount" class="hidden">
-                <p>Welcome back!</p>
-                <a id="checkin-account" href="https://members.acmucsd.com/?code=kickoff" class="btn" target="_blank"
-                    onclick="handleAccountDone()">Login & Auto
-                    Check-In</a>
+            <div id="checkInError" class="hidden">
+                <p class="warning" id="checkInErrorMsg"></p>
+                <a id="checkin-account" href="" class="btn" target="_blank"
+                    onclick="handleAccountDone()">Log In &amp; Check In</a>
             </div>
 
-            <div id="noAccount" class="hidden">
-                <p>OK, let's make one:</p>
-                <a href="https://members.acmucsd.com/register" target="_blank" class="btn"
-                    onclick="handleAccountDone()">Create Account</a>
-                <p>Then enter this code:</p>
-                <div class="code-display">kickoff</div>
-            </div>
+            <p id="checkInSuccess" class="hidden" style="color: #57df72; margin-top: 1rem;">
+                Thanks! Check your email after the event for next steps.
+            </p>
         </div>
     </div>
 
@@ -353,7 +366,6 @@
         document.getElementById('google-form').href = `${baseUrl}?${params.toString()}`;
 
         document.getElementById('checkin-account').href = `https://members.acmucsd.com/?code=${checkInCode}`;
-        document.getElementsByClassName('code-display')[0].textContent = checkInCode;
 
         // State management
         let currentScreen = 0;
@@ -370,8 +382,6 @@
         const taskStatus = document.getElementById('taskStatus');
         const taskStatusText = document.getElementById('taskStatusText');
         const taskProgressFill = document.getElementById('taskProgressFill');
-        const yesAccount = document.getElementById('yesAccount');
-        const noAccount = document.getElementById('noAccount');
 
         function updateTaskStatus() {
             const totalTasks = 2;
@@ -451,23 +461,38 @@
             }, 100); // Slight delay to ensure the click registers before enabling next
         }
 
-        // Screen 4 Logic: Portal Interaction Unlock
-        function handleAccountResponse(hasAccount) {
-            isPortalInteracted = true;
+        // Screen 4 Logic: Express Check-In
+        async function handleEmailCheckIn() {
+            const email = document.getElementById('emailInput').value.trim();
+            if (!email) return;
 
-            if (hasAccount) {
-                yesAccount.classList.remove('hidden');
-                noAccount.classList.add('hidden');
-            } else {
-                noAccount.classList.remove('hidden');
-                yesAccount.classList.add('hidden');
+            try {
+                const resp = await fetch('https://api.acmucsd.com/api/v2/attendance/expressCheckin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ attendanceCode: checkInCode, email })
+                });
+                const data = await resp.json();
+
+                if (data.error) {
+                    document.getElementById('checkInErrorMsg').textContent = data.error.message;
+                    document.getElementById('checkInError').classList.remove('hidden');
+                    document.getElementById('checkInSuccess').classList.add('hidden');
+                } else {
+                    document.getElementById('checkInError').classList.add('hidden');
+                    document.getElementById('checkInSuccess').classList.remove('hidden');
+                    handleAccountDone();
+                }
+            } catch (e) {
+                document.getElementById('checkInErrorMsg').textContent = 'Network error. Please try again.';
+                document.getElementById('checkInError').classList.remove('hidden');
             }
         }
 
         function handleAccountDone() {
             isPortalInteracted = true;
             if (currentScreen === 4) {
-                nextBtn.disabled = false; // Show/enable the next button
+                nextBtn.disabled = false;
             }
             updateTaskStatus();
         }
